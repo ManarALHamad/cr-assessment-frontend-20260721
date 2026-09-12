@@ -17,7 +17,7 @@ Organizations ("buyers") purchase under **Purchase Agreements**. When an agreeme
 an approver uses to find a CR, understand exactly what it changes, see its history, and approve or
 reject it — with the UI only ever offering/enabling actions the current user is allowed to take.
 
-You consume the provided mock API service (`src/api/cr-api.service.ts`). You do not build a backend.
+You consume the provided mock API service (`src/api/cr-api.service.ts`). You do not build a backend. 
 
 ## 2. The provided scaffold
 
@@ -36,7 +36,7 @@ An Angular 15 app (standalone components, reactive forms; tested with Jest + Tes
 `IMPLEMENTATION_NOTES.md` describe the screens and state in your own words (3–5 sentences).
 
 **Task 1 — Fix the two failing tests at the root.**
-- The **diff/preview** misclassifies a changed line item (`diff.spec.ts`).
+- The **diff/preview** misclassifies a changed line item (`diff.spec.ts`). one failure is done
 - The **detail** page enables Approve for a user who isn't permitted (`cr-detail.component.spec.ts`).
 
 Find and fix the underlying cause of each.

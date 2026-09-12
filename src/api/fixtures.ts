@@ -2,11 +2,14 @@ import { CrDetail, CrSummary, ReqUser } from '../models/cr.models';
 
 /** Deterministic, anonymized fixtures used by the mock API service and the tests. */
 
+//we have 3 fake users 
 export const users: Record<string, ReqUser> = {
-	approver: { id: 'mona', orgCode: 'org-alpha', policies: ['cr_r_o', 'cr_a_o'] },
-	viewer: { id: 'val', orgCode: 'org-alpha', policies: ['cr_r_o'] },
-	otherOrg: { id: 'bob', orgCode: 'org-beta', policies: ['cr_r_o', 'cr_a_o'] },
+	approver: { id: 'mona', orgCode: 'org-alpha', policies: ['cr_r_o', 'cr_a_o'] }, //mona can read the cr and approve it
+	viewer: { id: 'val', orgCode: 'org-alpha', policies: ['cr_r_o'] }, //val belongs to the same org as mona but can only vire the cr
+	otherOrg: { id: 'bob', orgCode: 'org-beta', policies: ['cr_r_o', 'cr_a_o'] }, //bob belongs to other org and can read,approve cr but shouldnt access org-alpha
 };
+
+//4 CRs 
 
 export const summaries: CrSummary[] = [
 	{ id: 'CR-1', title: 'Add 1 unit of SKU-A', status: 'PENDING_APPROVAL', orgCode: 'org-alpha', delta: 500, currency: 'USD', updatedAt: '2026-03-02T10:00:00.000Z' },
@@ -19,21 +22,21 @@ export const details: Record<string, CrDetail> = {
 	'CR-1': {
 		...summaries[0],
 		agreementId: 'AGR-1',
-		baselineLineItems: [
+		baselineLineItems: [ //cr1 before
 			{ sku: 'SKU-A', description: 'Widget A', quantity: 10, unitPrice: 500 },
 			{ sku: 'SKU-B', description: 'Widget B', quantity: 30, unitPrice: 100 },
 		],
-		proposedLineItems: [
-			{ sku: 'SKU-A', description: 'Widget A', quantity: 11, unitPrice: 500 },
-			{ sku: 'SKU-B', description: 'Widget B', quantity: 30, unitPrice: 100 },
+		proposedLineItems: [ //cr1 after 
+			{ sku: 'SKU-A', description: 'Widget A', quantity: 11, unitPrice: 500 }, //5500
+			{ sku: 'SKU-B', description: 'Widget B', quantity: 30, unitPrice: 100 }, //3000 total=8500
 		],
-		baselineTotal: 8000,
-		newTotal: 8500,
+		baselineTotal: 8000, //before
+		newTotal: 8500, //after
 		audit: [
-			{ action: 'SEND_FOR_APPROVAL', byUserId: 'alice', at: '2026-03-02T10:00:00.000Z' },
-			{ action: 'SUBMIT', byUserId: 'alice', at: '2026-03-02T09:30:00.000Z' },
-			{ action: 'CREATE', byUserId: 'alice', at: '2026-03-02T09:00:00.000Z' },
-		],
+			{ action: 'SEND_FOR_APPROVAL', byUserId: 'alice', at: '2026-03-02T10:00:00.000Z' }, //10:00
+			{ action: 'SUBMIT', byUserId: 'alice', at: '2026-03-02T09:30:00.000Z' }, //09:30
+			{ action: 'CREATE', byUserId: 'alice', at: '2026-03-02T09:00:00.000Z' }, //09:00
+		], //there is a bug here
 	},
 	'CR-2': {
 		...summaries[1],
@@ -57,6 +60,8 @@ export const details: Record<string, CrDetail> = {
 		newTotal: 1000,
 		audit: [{ action: 'CREATE', byUserId: 'alice', at: '2026-03-03T11:00:00.000Z' }],
 	},
+
+
 	'CR-9': {
 		...summaries[3],
 		agreementId: 'AGR-9',
@@ -67,3 +72,7 @@ export const details: Record<string, CrDetail> = {
 		audit: [{ action: 'CREATE', byUserId: 'bob', at: '2026-03-02T08:00:00.000Z' }],
 	},
 };
+
+//mona needs to approve or reject crs 
+//val should not see the approve and reject fields only view
+//bob can approve and reject another org his org
