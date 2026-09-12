@@ -5,17 +5,18 @@ const base: LineItem[] = [
 	{ sku: 'SKU-A', description: 'Widget A', quantity: 10, unitPrice: 500 },
 	{ sku: 'SKU-B', description: 'Widget B', quantity: 30, unitPrice: 100 },
 ];
-
+//baseline = sku-a, sku-b and the proposed is sku-a so sku-b removed
 describe('computeDiff', () => {
 	it('detects a removed sku', () => {
+		//find sku-b determine its kind and remove it
 		expect(computeDiff(base, [base[0]]).find((r) => r.sku === 'SKU-B')?.kind).toBe('removed');
 	});
-
+	//sku-c is new added it copies item from base into the new array 
 	it('detects an added sku', () => {
 		const rows = computeDiff(base, [...base, { sku: 'SKU-C', description: 'C', quantity: 1, unitPrice: 5 }]);
 		expect(rows.find((r) => r.sku === 'SKU-C')?.kind).toBe('added');
 	});
-
+	//if only the quantity has changed the result must be changed
 	it('detects a quantity-only change as changed', () => {
 		// SKU-A quantity 10 -> 11 (same unit price) is a real change.
 		const rows = computeDiff(base, [{ ...base[0], quantity: 11 }, base[1]]);
