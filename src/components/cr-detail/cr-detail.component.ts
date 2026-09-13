@@ -89,11 +89,47 @@ export class CrDetailComponent implements OnInit {
 	fmt(amount: number): string {
 		return this.detail ? formatMoney(amount, this.detail.currency) : String(amount);
 	}
+
 	//the action when clicking approve 
+	// TODO: perform the approve action through the API and reflect the outcome in the view.
+	//When Approve is clicked, I first guard against unauthorized or duplicate submissions. 
+	// I set a submitting state, call the mock API, and replace the loaded CR with the returned updated CR on success.
+	//  On failure I preserve the loaded data and show an action-level error, and finally always clears the submitting state.
+	
 	async approve(): Promise<void> {
-		// TODO: perform the approve action through the API and reflect the outcome in the view.
-		throw new Error('approve() not implemented');
+
+		if(!this.canApprove || this.submitting) return;
+
+		this.submitting = true;
+		this.actionError = undefined;
+
+		try {
+			const updated = await this.api.approve(
+
+				this.session.user,
+				this.id,
+				new Date().toISOString()
+
+			);
+
+			this.state = {status: 'loaded', data: updated};
+			
+		} catch (error) {
+
+			this.actionError = (error as Error).message;
+			
+		}
+		finally {
+
+			this.submitting = false;
+		}
+
+		// throw new Error('approve() not implemented');
 	}
+
+
+
+
 	//the action when clicking reject
 	async reject(): Promise<void> {
 		// TODO: require a valid rejectControl, then perform the reject action through the API and
