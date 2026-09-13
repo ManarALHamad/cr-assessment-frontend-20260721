@@ -58,10 +58,20 @@ export class CrDetailComponent implements OnInit {
 	}
 
 	/** Approval timeline, oldest-first. */
+	//arrange time from 9:00 - 9:30 - 10:00
+	// TODO: return the audit entries ordered chronologically (oldest first).
+	//this.detail?.audit (if cr exists use this audit array)/ [...] (creates a copy if the audit array)
+	//sorting calculation for every part of timeline entries we compare timestamps new Date(a.at) so time is in js
+	//The timeline is derived from the CR audit history so I copy the audit array to avoid mutating the API state
+	// then sort the copy by each entry's timestamp so the UI always renders the history chronologically
+
 	get timeline(): TimelineEntry[] {
-		// TODO: return the audit entries ordered chronologically (oldest first).
-		return this.detail?.audit ?? [];
-	}
+	return [...(this.detail?.audit ?? [])].sort(
+
+		(a, b) => new Date(a.at).getTime() - new Date(b.at).getTime()
+
+	);
+}
 
 	/** Whether the current user may approve the loaded CR. */
 	//should this user approve the cr

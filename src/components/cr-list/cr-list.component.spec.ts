@@ -14,13 +14,13 @@ async function render(user: ReqUser): Promise<ComponentFixture<CrListComponent>>
 	await TestBed.compileComponents();
 	const fixture = TestBed.createComponent(CrListComponent);
 	fixture.detectChanges(); // ngOnInit -> load()
-	await flush(); // let the mock API resolve
+	await flush(); // let the mock API resolve by giving it time 
 	fixture.detectChanges(); // render the loaded/empty state
 	return fixture;
 }
 
 describe('CrListComponent', () => {
-	it('renders a row per change request in the user org', async () => {
+	it('renders a row per change request in the user org', async () => { //org-alpha only Mona can approveor reject
 		const fixture = await render(users.approver);
 		expect(fixture.nativeElement.querySelectorAll('.cr-list__row').length).toBe(3); // org-alpha: CR-1, CR-2, CR-3
 	});
