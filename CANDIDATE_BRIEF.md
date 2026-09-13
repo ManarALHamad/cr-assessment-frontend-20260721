@@ -46,16 +46,16 @@ Find and fix the underlying cause of each.✅
 - implement the **status filter** so `visibleRows` (and the rendered table) narrows by status.✅
 
 **Task 3 — Change Request detail UI.** In `cr-detail.component` + its template:
-- the **diff/preview panel** (added / removed / changed / unchanged rows, with totals and delta),
+- the **diff/preview panel** (added / removed / changed / unchanged rows, with totals and delta),✅
 - the **approval timeline**, rendered **chronologically**,✅
 - **permission-aware action visibility**: whether Approve/Reject are offered/enabled must respect both
-  the CR's status and the user's policies,
-- **Approve / Reject actions** that call the API and behave correctly on a slow or failing response,
-- **Reject reason validation**: a reason is required before Reject can proceed.
+  the CR's status and the user's policies,✅
+- **Approve / Reject actions** that call the API and behave correctly on a slow or failing response,✅
+- **Reject reason validation**: a reason is required before Reject can proceed.✅
 
 **Task 4 — Role/permission-aware + UX states.** A read-only user sees the data but cannot see/enable
 actions; loading, empty, and error states are represented explicitly in the templates (no blank
-screens).
+screens).✅
 
 **Task 5 — Tests.** Add your own tests (component/DOM where relevant). Cover the behavior you built —
 list states and filter, the diff, the timeline, the permission logic, the action flows and their

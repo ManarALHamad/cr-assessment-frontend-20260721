@@ -32,4 +32,6 @@ describe('CrDetailComponent', () => {
 		const approveBtn: HTMLButtonElement = fixture.nativeElement.querySelector('.cr-actions__approve');  //find the approve button
 		expect(approveBtn.disabled).toBe(true);
 	});
+
+
 });
