@@ -1,6 +1,6 @@
 import { Component, Input, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { FormControl, ReactiveFormsModule } from '@angular/forms'; //reject user input we import this 
+import { FormControl, ReactiveFormsModule, Validators} from '@angular/forms'; //reject user input we import this 
 import { CrApiService } from '../../api/cr-api.service';
 import { SessionService } from '../../session/session.service'; //gives the component the current user
 import { CrDetail, TimelineEntry } from '../../models/cr.models';
@@ -29,7 +29,9 @@ export class CrDetailComponent implements OnInit {
 	// TODO: add validation so the form is invalid until a reason is entered.
 
 
-	rejectControl = new FormControl('', { nonNullable: true });
+	rejectControl = new FormControl('', { nonNullable: true,
+		validators: [Validators.required]
+	});
 
 	//private means only class uses them
 	constructor(private readonly api: CrApiService, private readonly session: SessionService) {}
@@ -95,7 +97,7 @@ export class CrDetailComponent implements OnInit {
 	//When Approve is clicked, I first guard against unauthorized or duplicate submissions. 
 	// I set a submitting state, call the mock API, and replace the loaded CR with the returned updated CR on success.
 	//  On failure I preserve the loaded data and show an action-level error, and finally always clears the submitting state.
-	
+
 	async approve(): Promise<void> {
 
 		if(!this.canApprove || this.submitting) return;
@@ -131,9 +133,43 @@ export class CrDetailComponent implements OnInit {
 
 
 	//the action when clicking reject
+	// TODO: require a valid rejectControl, then perform the reject action through the API and
+	// reflect the outcome in the view.
+	
 	async reject(): Promise<void> {
-		// TODO: require a valid rejectControl, then perform the reject action through the API and
-		//       reflect the outcome in the view.
-		throw new Error('reject() not implemented');
+
+		if(!this.canReject || this.submitting) return; //no rejection if the user unauthorized or another request is already running
+
+		if(this.rejectControl.invalid) { //if no rejection reason the field will be untouched
+
+			this.rejectControl.markAllAsTouched();
+			return;
+		}
+
+		this.submitting = true;
+		this.actionError = undefined;
+
+		try {
+			const updated = await this.api.reject(
+				this.session.user,
+				this.id,
+				new Date().toISOString(),
+				this.rejectControl.value
+			);
+
+			this.state = {status: 'loaded', data: updated}
+			
+		} catch (error) {
+
+			this.actionError = (error as Error).message;
+			
+		}
+
+		finally {
+
+			this.submitting = false;
+		}
+
+		// throw new Error('reject() not implemented');
 	}
 }
