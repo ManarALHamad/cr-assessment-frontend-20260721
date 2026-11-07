@@ -50,9 +50,11 @@ export class CrListComponent implements OnInit {
 	onFilterChange(value: string): void {
 		this.statusFilter = value as CrStatus | 'ALL';
 	}
-
+	//3 bug solved ✅
 	/** Rows to render, after applying the active status filter. */
 	//we will apply filter 
+	//here visible rows return only the change request that matches the selected status
+
 	get visibleRows(): CrSummary[] {
 		const rows = this.state.data ?? [];
 		// TODO: narrow `rows` by `this.statusFilter` ('ALL' shows everything).

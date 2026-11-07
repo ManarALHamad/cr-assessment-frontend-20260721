@@ -28,7 +28,6 @@ export class CrDetailComponent implements OnInit {
 	actionError?: string; //stores error from an action
 	// TODO: add validation so the form is invalid until a reason is entered.
 
-
 	rejectControl = new FormControl('', { nonNullable: true,
 		validators: [Validators.required]
 	});
@@ -62,10 +61,12 @@ export class CrDetailComponent implements OnInit {
 	/** Approval timeline, oldest-first. */
 	//arrange time from 9:00 - 9:30 - 10:00
 	// TODO: return the audit entries ordered chronologically (oldest first).
+
 	//this.detail?.audit (if cr exists use this audit array)/ [...] (creates a copy if the audit array)
 	//sorting calculation for every part of timeline entries we compare timestamps new Date(a.at) so time is in js
 	//The timeline is derived from the CR audit history so I copy the audit array to avoid mutating the API state
 	// then sort the copy by each entry's timestamp so the UI always renders the history chronologically
+	// ✅ 4 timeline oldest to newest 
 
 	get timeline(): TimelineEntry[] {
 	return [...(this.detail?.audit ?? [])].sort(
@@ -77,6 +78,7 @@ export class CrDetailComponent implements OnInit {
 
 	/** Whether the current user may approve the loaded CR. */
 	//should this user approve the cr
+	// ✅ second bug 2
 	get canApprove(): boolean {
 		// NOTE: this only looks at the CR status. The UI must also respect the user's permissions.
 		//the cr must be pending approval and also the user has approval policy (approver) its disabled for the viewer
@@ -97,14 +99,17 @@ export class CrDetailComponent implements OnInit {
 	//When Approve is clicked, I first guard against unauthorized or duplicate submissions. 
 	// I set a submitting state, call the mock API, and replace the loaded CR with the returned updated CR on success.
 	//  On failure I preserve the loaded data and show an action-level error, and finally always clears the submitting state.
-
+	// TODO ✅ 5
 	async approve(): Promise<void> {
 
-		if(!this.canApprove || this.submitting) return;
+		if(!this.canApprove || this.submitting) return; //prevent invalid or repeated submission 
+
+		//mark the action as running and clear any previous error 
 
 		this.submitting = true;
 		this.actionError = undefined;
 
+		//send approval request 
 		try {
 			const updated = await this.api.approve(
 
@@ -113,14 +118,18 @@ export class CrDetailComponent implements OnInit {
 				new Date().toISOString()
 
 			);
-
+			//update the view after success 
 			this.state = {status: 'loaded', data: updated};
 			
+			//handle failure
 		} catch (error) {
 
 			this.actionError = (error as Error).message;
 			
 		}
+
+		//This runs whether the request succeeds or fails
+
 		finally {
 
 			this.submitting = false;
@@ -135,7 +144,7 @@ export class CrDetailComponent implements OnInit {
 	//the action when clicking reject
 	// TODO: require a valid rejectControl, then perform the reject action through the API and
 	// reflect the outcome in the view.
-	
+	// ✅ 6
 	async reject(): Promise<void> {
 
 		if(!this.canReject || this.submitting) return; //no rejection if the user unauthorized or another request is already running
@@ -145,20 +154,21 @@ export class CrDetailComponent implements OnInit {
 			this.rejectControl.markAllAsTouched();
 			return;
 		}
-
+		//start the submission 
 		this.submitting = true;
 		this.actionError = undefined;
 
 		try {
-			const updated = await this.api.reject(
+			const updated = await this.api.reject( //call the rejection API 
 				this.session.user,
 				this.id,
 				new Date().toISOString(),
 				this.rejectControl.value
 			);
 
-			this.state = {status: 'loaded', data: updated}
+			this.state = {status: 'loaded', data: updated} //show updated request 
 			
+			//handles errors and finish 
 		} catch (error) {
 
 			this.actionError = (error as Error).message;

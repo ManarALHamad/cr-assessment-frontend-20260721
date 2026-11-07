@@ -1,3 +1,6 @@
+
+//first bug that I fixed
+
 import { LineItem } from '../models/cr.models';
 
 //diff four states
@@ -31,6 +34,7 @@ export function computeDiff(baseline: LineItem[], proposed: LineItem[]): DiffRow
 		//this asks if unit price has changed or not (but actually the quantity has changed and the code says unchange)
 		//there is a failure in here cause it should check unit price, quantity and description
 		//failure is detected and solved i SKU-A changed
+		//first bug is solved ✅
 		const changed = 
 		b.unitPrice !== p.unitPrice ||
 		b.description !== p.description ||

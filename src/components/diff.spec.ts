@@ -1,3 +1,6 @@
+
+//contains automated tests for computeDiff() in diff.util.ts.
+
 import { computeDiff } from './diff.util';
 import { LineItem } from '../models/cr.models';
 

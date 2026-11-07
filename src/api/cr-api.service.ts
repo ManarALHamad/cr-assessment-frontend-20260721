@@ -42,7 +42,7 @@ export class CrApiService {
 	listChangeRequests(user: ReqUser): Promise<CrSummary[]> {
 		const rows = fixtureSummaries //fake list of crs
 			.filter((s) => s.orgCode === user.orgCode)
-			.map((s) => { //for every CR summary yt creates the data that will be returned
+			.map((s) => { //for every CR summary yet creates the data that will be returned
 				const d = this.detailStore[s.id];  //return detailed version of cr
 				return d ? { id: d.id, title: d.title, status: d.status, orgCode: d.orgCode, delta: d.delta, currency: d.currency, updatedAt: d.updatedAt } : { ...s };
 			});

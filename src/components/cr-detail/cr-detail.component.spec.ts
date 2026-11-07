@@ -1,3 +1,7 @@
+
+//we have 10 tests checking the detail page’s display, permissions, approval, and rejection.
+//render() helper prepares each test: it creates the component with the chosen user and request ID, waits for loading, and updates the HTML.
+
 import { ComponentFixture, TestBed } from '@angular/core/testing'; //angular testing tools
 import { CrDetailComponent } from './cr-detail.component';
 import { SessionService } from '../../session/session.service';
